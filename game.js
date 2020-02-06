@@ -4,18 +4,6 @@ class Game {
     constructor(root, token, resetBtn, winnerBanner, numRows=6,numCols=7){
         this.root = root;
         this.size = {numRows, numCols};
-        const gameBoard = this.initializeBoardHTML();
-        this.openings = gameBoard.querySelectorAll('.opening');
-        this.gameRows = gameBoard.querySelectorAll('.game-row');
-        this.enableOpenings();
-        this.token = token;
-        this.winnerBanner = winnerBanner;
-        this.winnerBanner.classList.add('hidden');
-        this.resetBtn = resetBtn;
-        resetBtn.addEventListener('click', (e) => {
-            this.reset();
-        })
-        //create internally used game board
         this.board = []
         for(let i = 0;i<numCols;i++){
             this.board.push(new Column(numRows))
@@ -24,66 +12,8 @@ class Game {
         this.isOver = false;
         this.winner = null;
     }
-    initializeBoardHTML(){
-        //Create game board HTML elements
-        //returns gameBoard table HTML element
-        const gameBoard = document.createElement('table');
-        const tHead = document.createElement('thead');
-        gameBoard.append(tHead);
-        const tHeadTr = document.createElement('tr');
-        tHead.append(tHeadTr);
-        tHeadTr.classList.add('opening-row');
-        for(let col=0;col<this.size.numCols;col++){
-            const opening = document.createElement('th');
-            opening.innerHTML = `<div class="opening" data-col="${col}"></div>`;
-            tHeadTr.append(opening);
-        }
-        const tBody = document.createElement('tbody');
-        gameBoard.append(tBody);
-        for(let row=0;row<this.size.numRows;row++){
-            const newRow = document.createElement('tr');
-            newRow.classList.add('game-row');
-            for(let col=0;col<this.size.numCols;col++){
-                const newCell = document.createElement('td');
-                newCell.innerHTML = `<div class="cell"></div>`;
-                newRow.append(newCell);
-            }
-            tBody.append(newRow);
-        }
-        this.root.append(gameBoard);
-        return gameBoard;
-    }
-    enableOpenings(){
-        // enable events for dropping token into columns
-        for (let opening of this.openings){
-            opening.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = "move";
-            });
-            opening.addEventListener('drop', (e) => {
-                if(this.isOver) return;
-                const targetCol = parseInt(e.target.dataset.col);
-                if(this.isColumnFull(targetCol)) return;
-                const targetRow = this.board[targetCol].lastUnfilledRow;
-                const player = this.isPlayer1 ? 'player-1' : 'player-2';
-                this.addPiece(targetRow, targetCol);
-                this.gameRows[targetRow].children[targetCol].firstElementChild.classList.add(player);
-                if(this.isColumnFull(targetCol)){
-                    e.target.classList.add('full');
-                }
-                if(this.isOver){
-                    for(let opening of this.openings){
-                        opening.classList.add('full');
-                    }
-                }
-                this.toggleActivePlayer();
-            });
-        }
-    }
     toggleActivePlayer(){
         // swap active player at end of turn
-        this.token.classList.toggle('player-1');
-        this.token.classList.toggle('player-2');
         this.isPlayer1 = !this.isPlayer1;
     }
     addPiece(rowIdx, colIdx){
@@ -94,7 +24,6 @@ class Game {
         if(this.checkWinnerFull()){
             this.isOver = true;
             this.winner = this.isPlayer1 ? 'Player 1' : 'Player 2';
-            this.displayVictoryMessage();
         }
     }
 
@@ -114,23 +43,11 @@ class Game {
     }
     reset(){
         // reset game to initial state
-        this.root.innerHTML = '';
-        this.winnerBanner.innerText = '';
-        this.winnerBanner.classList.add('hidden');
-        const gameBoard = this.initializeBoardHTML();
-        this.openings = gameBoard.querySelectorAll('.opening');
-        this.gameRows = gameBoard.querySelectorAll('.game-row');
-        this.enableOpenings();
         this.isOver = false;
         this.isPlayer1 = true;
-        this.token.classList.add('player-1');
-        this.token.classList.remove('player-2');
         this.winner = null;
         for(let col of this.board){
             col.reset();
-        }
-        for(let opening of this.openings){
-            opening.classList.remove('full');
         }
     }
     getFullSlots(){
@@ -145,11 +62,6 @@ class Game {
     getMatrixForm(){
         // return matrix representation of Game's board
         return this.board.map((col) => col.contents);
-    }
-    displayVictoryMessage(){
-        // handle display of victory message
-        this.winnerBanner.classList.remove('hidden');
-        this.winnerBanner.innerText = `${this.winner} Wins!!!`;
     }
     checkWinnerFull(){
         // check if entire board is in a winner state

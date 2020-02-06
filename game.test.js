@@ -1,24 +1,16 @@
-const testToken = document.querySelector('.token');
-const testResetBtn = document.querySelector('.reset');
-const testGameArea = document.querySelector('.game');
-const testWinnerBanner = document.querySelector('.winner-banner');
 let myTestGame;
 
 describe("Game functionality tests", function() {
-    beforeAll(function () {
+    beforeEach(function () {
       // initialization logic
-      myTestGame = new Game(testGameArea, testToken, testResetBtn, testWinnerBanner);
+      myTestGame = new Game();
     });
 
     it('toggleActivePlayer() should swap isPlayer1 and token class', function () {
       myTestGame.toggleActivePlayer();
       expect(myTestGame.isPlayer1).toEqual(false);
-      expect(myTestGame.token.classList.contains('player-1')).toEqual(false);
-      expect(myTestGame.token.classList.contains('player-2')).toEqual(true);
       myTestGame.toggleActivePlayer();
       expect(myTestGame.isPlayer1).toEqual(true);
-      expect(myTestGame.token.classList.contains('player-1')).toEqual(true);
-      expect(myTestGame.token.classList.contains('player-2')).toEqual(false);
     });
     it('setVal() should set correct value at correct indices', function () {
       myTestGame.setVal(3,2,1);
@@ -206,8 +198,8 @@ describe("Game functionality tests", function() {
         expect(Game.isWinner1x4([2,2,2,0])).toEqual(false);
         expect(Game.isWinner1x4([0,0,0,0])).toEqual(false);
     });
-    afterEach(function () {
-        // tear down logic
-        myTestGame.reset();
-    });
+    // afterEach(function () {
+    //     // tear down logic
+    //     myTestGame.reset();
+    // });
   });

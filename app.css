@@ -11,7 +11,7 @@ body {
     padding-top: 100%;
     border-style: dotted;
     border-width: 3px;
-    border-color: 	red;
+    border-color: 	#aaa;
     border-radius: 100%;
 }
 
@@ -33,6 +33,7 @@ body {
     max-height: 60px;
     padding: 0;
     transition: none;
+    touch-action: none;
 }
 th, td{
     margin: 0;
@@ -61,6 +62,9 @@ tbody {
     max-height: 650px;
     margin: 0 auto;
 }
+.scoreboard {
+    text-align: center;
+}
 table {
     border-collapse: collapse;
     width: 90%;
@@ -69,8 +73,9 @@ table {
 }
 
 .full {
-    border-color: slategray;
+    border-color: #aaa;
 }
+
 
 .player-1 {
    background-color: #DD4850; 
@@ -155,3 +160,50 @@ h3 {
     padding-bottom: 100%;
   }
 
+  .dropzone {
+    background-color: #ccc;
+    border: dashed 4px transparent;
+    border-radius: 4px;
+    margin: 10px auto 30px;
+    padding: 10px;
+    width: 80%;
+    transition: background-color 0.3s;
+  }
+  
+  .drop-active {
+    border-color: red;
+  }
+  .full.drop-active {
+    border-color: #aaa;
+  }
+  .drop-target {
+    background-color: #29e;
+    border-color: #fff;
+    border-style: solid;
+  }
+  .full.drop-target {
+      border-color: #aaa;
+      background-color: transparent;
+      border-style: dotted;
+  }
+  
+  .drag-drop {
+    display: inline-block;
+    min-width: 40px;
+    padding: 2em 0.5em;
+  
+    color: #fff;
+    background-color: #29e;
+    border: solid 2px #fff;
+  
+    touch-action: none;
+    -webkit-transform: translate(0px, 0px);
+            transform: translate(0px, 0px);
+  
+    transition: background-color 0.3s;
+  }
+  
+  .drag-drop.can-drop {
+    color: #000;
+    background-color: #4e4;
+  }

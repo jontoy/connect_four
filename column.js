@@ -9,7 +9,7 @@ class Column {
     setVal(index, value){
         // Set Column's contents at index
         if (index > this.contents.length){
-            return undefined
+            throw new Error('invalid index');
         }
         if (![1,2].includes(value)){
             return undefined
@@ -19,7 +19,7 @@ class Column {
     getVal(index){
         // Get Column's contents at index
         if (index > this.contents.length){
-            return undefined
+            throw new Error('invalid index');
         }
         return this.contents[index];
     }

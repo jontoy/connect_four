@@ -16,6 +16,7 @@ describe("Game functionality tests", function() {
       myTestGame.setVal(3,2,1);
       expect(myTestGame.board[2].contents[3]).toEqual(1);
     });
+    
     it('setVal() should reject values other than 1 and 2', function () {
       myTestGame.setVal(3,2,10);
       expect(myTestGame.getMatrixForm()).toEqual(
@@ -38,27 +39,20 @@ describe("Game functionality tests", function() {
         [0,0,0,0,0,0]]
       );
     });
-    it('setVal() should reject invalid indices', function () {
-      myTestGame.setVal(10,2,1);
-      expect(myTestGame.getMatrixForm()).toEqual(
-          [[0,0,0,0,0,0],
-          [0,0,0,0,0,0],
-          [0,0,0,0,0,0],
-          [0,0,0,0,0,0],
-          [0,0,0,0,0,0],
-          [0,0,0,0,0,0],
-          [0,0,0,0,0,0]]
-      );
-    });
+    it('setVal() should throw error for invalid indices', function () {
+        expect(function(){myTestGame.setVal(10,2,1)}).toThrowError('invalid row index');
+        expect(function(){myTestGame.setVal(2,20,1)}).toThrowError('invalid column index');
+        expect(function(){myTestGame.setVal(10,20,1)}).toThrowError('invalid column index');
+      });
 
     it('getVal() should return correct value at correct indices', function () {
       myTestGame.board[2].contents = [4,5,2,1,10,16];
       expect(myTestGame.getVal(4,2)).toEqual(10);
     });
-    it('getVal() should return undefined for invalid indices', function () {
-      expect(myTestGame.getVal(10,2)).toEqual(undefined);
-      expect(myTestGame.getVal(2,20)).toEqual(undefined);
-      expect(myTestGame.getVal(10,20)).toEqual(undefined);
+    it('getVal() should throw error for invalid indices', function () {
+      expect(function(){myTestGame.getVal(10,2)}).toThrowError('invalid row index');
+      expect(function(){myTestGame.getVal(2,20)}).toThrowError('invalid column index');
+      expect(function(){myTestGame.getVal(10,20)}).toThrowError('invalid column index');
     });
 
     it('addPiece() should place correct player token in correct spot', function () {
@@ -67,15 +61,18 @@ describe("Game functionality tests", function() {
         myTestGame.addPiece(4,0);
         expect(myTestGame.board[0].contents).toEqual([0,0,0,0,2,1]);
     });
-    it('addPiece() should end game at winning move', function () {
+    it('updateWinnerState() should end game if board has been won', function(){
+        myTestGame.updateWinnerState();
         expect(myTestGame.isOver).toEqual(false);
         myTestGame.addPiece(5,0);
         myTestGame.addPiece(4,0);
         myTestGame.addPiece(3,0);
         myTestGame.addPiece(2,0);
+        myTestGame.updateWinnerState();
         expect(myTestGame.isOver).toEqual(true);
         expect(myTestGame.winner).toEqual('Player 1');
     });
+
     it('getFullSlots() should return boolean array of filled columns', function () {
         expect(myTestGame.getFullSlots()).toEqual([false, false, false, false, false, false, false]);
         myTestGame.board[3].isFull = true;
@@ -198,8 +195,24 @@ describe("Game functionality tests", function() {
         expect(Game.isWinner1x4([2,2,2,0])).toEqual(false);
         expect(Game.isWinner1x4([0,0,0,0])).toEqual(false);
     });
-    // afterEach(function () {
-    //     // tear down logic
-    //     myTestGame.reset();
-    // });
+    it('reset() corrected sets game to initial state', function () {
+        myTestGame.addPiece(5,0);
+        myTestGame.addPiece(4,0);
+        myTestGame.addPiece(3,0);
+        myTestGame.addPiece(2,0);
+        myTestGame.updateWinnerState();
+        myTestGame.reset();
+        expect(myTestGame.isPlayer1).toEqual(true);
+        expect(myTestGame.isOver).toEqual(false);
+        expect(myTestGame.winner).toEqual(null);
+        expect(myTestGame.getMatrixForm()).toEqual(
+            [[0,0,0,0,0,0],
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0]]
+        );
+    })
   });

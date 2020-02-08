@@ -16,9 +16,8 @@ describe("Column functionality tests", function() {
       myColumn.setVal(3,'blue');
       expect(myColumn.contents).toEqual([0,0,0,0,0,0]);
     });
-    it('setVal() should reject invalid indices', function () {
-      myColumn.setVal(20,1);
-      expect(myColumn.contents).toEqual([0,0,0,0,0,0]);
+    it('setVal() should throw errors for invalid indices', function () {
+      expect(function(){myColumn.setVal(20,1)}).toThrowError('invalid index');
     });
 
     it('getVal() should return correct value at correct index', function () {
@@ -26,7 +25,7 @@ describe("Column functionality tests", function() {
       expect(myColumn.getVal(4)).toEqual(10);
     });
     it('getVal() should return undefined for invalid indices', function () {
-      expect(myColumn.getVal(10)).toEqual(undefined);
+      expect(function(){myColumn.getVal(10)}).toThrowError('invalid index');
     });
 
     it('decrementUnfilledRow() should update lastUnfilledRow correctly', function () {

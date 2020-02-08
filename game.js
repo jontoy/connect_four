@@ -1,14 +1,14 @@
 
 class Game {
     // Class to represent a game of connect four
-    constructor(root, token, resetBtn, winnerBanner, numRows=6,numCols=7){
-        this.root = root;
+    constructor(numRows=6,numCols=7){
         this.size = {numRows, numCols};
         this.board = []
         for(let i = 0;i<numCols;i++){
             this.board.push(new Column(numRows))
         }
         this.isPlayer1 = true;
+        this.scores = {p1:0, p2:0};
         this.isOver = false;
         this.winner = null;
     }
@@ -21,23 +21,39 @@ class Game {
         const playerId = this.isPlayer1 ? 1 : 2;
         this.setVal(rowIdx, colIdx, playerId);
         this.board[colIdx].decrementUnfilledRow();
+    }
+    updateWinnerState(){
         if(this.checkWinnerFull()){
             this.isOver = true;
-            this.winner = this.isPlayer1 ? 'Player 1' : 'Player 2';
+            if(this.isPlayer1){
+                this.winner = 'Player 1';
+                this.scores.p1 += 1;
+            } else{
+                this.winner = 'Player 2';
+                this.scores.p2 += 1;
+            }
         }
     }
 
     getVal(rowIdx, colIdx){
         // filter out invalid inputs
-        if(colIdx >= this.size.numCols || colIdx < 0) return;
-        if(rowIdx >= this.size.numRows || rowIdx < 0) return;
+        if(colIdx >= this.size.numCols || colIdx < 0){
+            throw new Error('invalid column index');
+        }
+        if(rowIdx >= this.size.numRows || rowIdx < 0){
+            throw new Error('invalid row index');
+        }
         // retrieve board entry at index (rowIdx, colIdx)
         return this.board[colIdx].getVal(rowIdx);
     }
     setVal(rowIdx, colIdx, value){
         // filter out invalid inputs
-        if(colIdx >= this.size.numCols || colIdx < 0) return;
-        if(rowIdx >= this.size.numRows || rowIdx < 0) return;
+        if(colIdx >= this.size.numCols || colIdx < 0){
+            throw new Error('invalid column index');
+        }
+        if(rowIdx >= this.size.numRows || rowIdx < 0){
+            throw new Error('invalid row index');
+        }
         // set board entry at index (rowIdx, colIdx)
         this.board[colIdx].setVal(rowIdx, value);
     }

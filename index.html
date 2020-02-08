@@ -15,6 +15,10 @@
       <h4>Connect 4 of your color in a row in any direction to win!</h4>
     </div>
     <div class="container">
+      <div class="scoreboard">
+        <h3>Match Record</h3>
+        <p><span class="score1">0</span>-<span class="score2">0</span></p>
+      </div>
 
       <div class="winner-banner hidden"></div>
       <button class="reset btn"><span><i class="fas fa-redo"></i></span></button>
@@ -26,16 +30,17 @@
       </div>
     </div>
 <!-- uncoment the following to run Jasmine tests -->
-    <!-- <script 
+    <script 
     src="https://unpkg.com/jasmine-core/lib/jasmine-core/jasmine.js"></script>
     <script 
     src="https://unpkg.com/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
     <script 
     src= "https://unpkg.com/jasmine-core/lib/jasmine-core/boot.js"></script>
     <script src="column.test.js"></script> 
-    <script src="game.test.js"></script> -->
+    <script src="game.test.js"></script>
     
 <!-- end of Jasmine tests -->
+    <script src="https://unpkg.com/interactjs/dist/interact.min.js"></script>
     <script src="column.js"></script>
     <script src="game.js"></script>
     <script src="utils.js"></script>

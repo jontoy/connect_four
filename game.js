@@ -19,11 +19,12 @@ class Game {
     addPiece(rowIdx, colIdx){
         // add token to board at index (rowIdx, colIdx)
         const playerId = this.isPlayer1 ? 1 : 2;
-        this.setVal(rowIdx, colIdx, playerId);
-        this.board[colIdx].decrementUnfilledRow();
+        this._setVal(rowIdx, colIdx, playerId);
+        this.board[colIdx]._decrementUnfilledRow();
     }
+    
     updateWinnerState(){
-        if(this.checkWinnerFull()){
+        if(this._checkWinnerFull()){
             this.isOver = true;
             if(this.isPlayer1){
                 this.winner = 'Player 1';
@@ -34,29 +35,13 @@ class Game {
             }
         }
     }
+    static isWinner1x4(arr){
+        // check if given array corresponds to a winning state
+        // (user has successfully connected 4)
+        if(arr.length < 4) return false;
+        return arr.every((val, i, arr) => ((val === arr[0]) && ([1,2].includes(val))));
+    }
 
-    getVal(rowIdx, colIdx){
-        // filter out invalid inputs
-        if(colIdx >= this.size.numCols || colIdx < 0){
-            throw new Error('invalid column index');
-        }
-        if(rowIdx >= this.size.numRows || rowIdx < 0){
-            throw new Error('invalid row index');
-        }
-        // retrieve board entry at index (rowIdx, colIdx)
-        return this.board[colIdx].getVal(rowIdx);
-    }
-    setVal(rowIdx, colIdx, value){
-        // filter out invalid inputs
-        if(colIdx >= this.size.numCols || colIdx < 0){
-            throw new Error('invalid column index');
-        }
-        if(rowIdx >= this.size.numRows || rowIdx < 0){
-            throw new Error('invalid row index');
-        }
-        // set board entry at index (rowIdx, colIdx)
-        this.board[colIdx].setVal(rowIdx, value);
-    }
     reset(){
         // reset game to initial state
         this.isOver = false;
@@ -75,82 +60,105 @@ class Game {
         // check if Column at index colIdx of board is full
         return this.board[colIdx].isFull
     }
-    getMatrixForm(){
+    getVal(rowIdx, colIdx){
+        // filter out invalid inputs
+        if(colIdx >= this.size.numCols || colIdx < 0){
+            throw new Error('invalid column index');
+        }
+        if(rowIdx >= this.size.numRows || rowIdx < 0){
+            throw new Error('invalid row index');
+        }
+        // retrieve board entry at index (rowIdx, colIdx)
+        return this.board[colIdx].getVal(rowIdx);
+    }
+    _setVal(rowIdx, colIdx, value){
+        // filter out invalid inputs
+        if(colIdx >= this.size.numCols || colIdx < 0){
+            throw new Error('invalid column index');
+        }
+        if(rowIdx >= this.size.numRows || rowIdx < 0){
+            throw new Error('invalid row index');
+        }
+        // set board entry at index (rowIdx, colIdx)
+        this.board[colIdx]._setVal(rowIdx, value);
+    }
+    _getMatrixForm(){
         // return matrix representation of Game's board
         return this.board.map((col) => col.contents);
     }
-    checkWinnerFull(){
+    _checkWinnerFull(){
         // check if entire board is in a winner state
         for(let i=0;i<this.size.numRows-3;i++){
             for(let j=0;j<this.size.numCols-3;j++){
-                if(this.checkWinner4x4(i,j)){
+                if(this._checkWinner4x4(i,j)){
                     return true
                 }
             }
         }
         return false
     }
-    checkWinner4x4(rowStart, colStart){
+
+    _checkWinner4x4(rowStart, colStart){
         // check if 4x4 section of board starting at index
         // (rowStart, colStart) is in a winning state
-        if(this.checkCols4x4(rowStart, colStart)){
+        if(this._checkCols4x4(rowStart, colStart)){
             return true
         }
-        if(this.checkRows4x4(rowStart, colStart)){
+        if(this._checkRows4x4(rowStart, colStart)){
             return true
         }
-        if(this.checkDiagonals4x4(rowStart, colStart)){
+        if(this._checkDiagonals4x4(rowStart, colStart)){
             return true
         }
         return false
     }
-    checkCols4x4(rowStart, colStart){
+    _checkCols4x4(rowStart, colStart){
         // check if 4x4 section of board starting at index
         // (rowStart, colStart) has winning colums
         for(let col=colStart;col<colStart+4;col++){
-            if(Game.isWinner1x4(this.returnCol1x4(rowStart, col))){
+            if(Game.isWinner1x4(this._returnCol1x4(rowStart, col))){
                 return true
             }
         }
         return false;
     }
-    checkRows4x4(rowStart, colStart){
+    _checkRows4x4(rowStart, colStart){
         // check if 4x4 section of board starting at index
         // (rowStart, colStart) has winning rows
         for(let row=rowStart;row<rowStart+4;row++){
-            if(Game.isWinner1x4(this.returnRow1x4(row, colStart))){
+            if(Game.isWinner1x4(this._returnRow1x4(row, colStart))){
                 return true
             }
         }
         return false;
     }
-    checkDiagonals4x4(rowStart, colStart){
+    _checkDiagonals4x4(rowStart, colStart){
         // check if 4x4 section of board starting at index
         // (rowStart, colStart) has winning diagonals
-        if(Game.isWinner1x4(this.returnDiagonalA1x4(rowStart, colStart))){
+        if(Game.isWinner1x4(this._returnDiagonalA1x4(rowStart, colStart))){
             return true
         }
-        if(Game.isWinner1x4(this.returnDiagonalB1x4(rowStart+3, colStart))){
+        if(Game.isWinner1x4(this._returnDiagonalB1x4(rowStart+3, colStart))){
             return true
         }
         return false
     }
-    returnCol1x4(rowStart, col){
+    _returnCol1x4(rowStart, col){
         // return an 1x4 Array slice of the game board in the 
         // column direction starting at index (rowStart, col)
         if(rowStart>this.size.numRows-4) return
         if(col > this.size.numCols) return
         return this.board[col].contents.slice(rowStart,rowStart+4);
     }
-    returnRow1x4(row, colStart){
+    _returnRow1x4(row, colStart){
         // return an 1x4 Array slice of the game board in the 
         // row direction starting at index (rowStart, col)
         if(colStart>this.size.numCols-4) return
         if(row > this.size.numRows) return
-        return this.getMatrixForm().slice(colStart, colStart+4).map((col) => (col[row]))
+        return this._getMatrixForm().slice(colStart, colStart+4).map((col) => (col[row]))
     }
 
-    returnDiagonalA1x4(rowStart, colStart){
+    _returnDiagonalA1x4(rowStart, colStart){
         //returns the 1x4 array of the "\" diagonal
         //of a 4x4 matrix-array
         if(colStart>this.size.numCols-4) return
@@ -162,7 +170,7 @@ class Game {
         }
         return diagonalValues
     }
-    returnDiagonalB1x4(rowStart, colStart){
+    _returnDiagonalB1x4(rowStart, colStart){
         //returns a 1x4 array of the "/" diagonal
         //of a 4x4 matrix-array
         if(colStart>this.size.numCols-4) return;
@@ -174,10 +182,5 @@ class Game {
         }
         return diagonalValues
     }
-    static isWinner1x4(arr){
-        // check if given array corresponds to a winning state
-        // (user has successfully connected 4)
-        if(arr.length < 4) return false;
-        return arr.every((val, i, arr) => ((val === arr[0]) && ([1,2].includes(val))));
-    }
+
 }
